@@ -263,7 +263,7 @@ export const WorkflowInstancePage = ({
                     disabled={!permittedToUse.allowed || !canRerun}
                     onClick={handleRerun}
                   >
-                    Rerun
+                    Rerun2
                   </Button>
                 </Tooltip>
               </Grid>
