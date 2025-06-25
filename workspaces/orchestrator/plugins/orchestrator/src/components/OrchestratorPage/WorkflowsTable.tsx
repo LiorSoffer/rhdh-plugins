@@ -15,7 +15,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { Link, TableColumn, TableProps } from '@backstage/core-components';
 import { useRouteRef } from '@backstage/core-plugin-api';
@@ -42,6 +42,7 @@ import WorkflowOverviewFormatter, {
 } from '../../dataFormatters/WorkflowOverviewFormatter';
 import { usePermissionArray } from '../../hooks/usePermissionArray';
 import {
+  entityWorkflowRouteRef,
   executeWorkflowRouteRef,
   workflowRouteRef,
   workflowRunsRouteRef,
@@ -114,6 +115,7 @@ export const WorkflowsTable = ({ items }: WorkflowsTableProps) => {
   const definitionLink = useRouteRef(workflowRouteRef);
   const definitionRunsLink = useRouteRef(workflowRunsRouteRef);
   const executeWorkflowLink = useRouteRef(executeWorkflowRouteRef);
+  const entityWorkflowLink = useRouteRef(entityWorkflowRouteRef);
   const [data, setData] = useState<FormattedWorkflowOverview[]>([]);
 
   const { allowed: permittedToUse } = usePermittedToUseBatch(items);
@@ -190,28 +192,31 @@ export const WorkflowsTable = ({ items }: WorkflowsTableProps) => {
     },
     [items, permittedToView],
   );
+  const { namespace, kind, name } = useParams();
 
   const actions = useMemo(() => {
-    const actionItems: TableProps<FormattedWorkflowOverview>['actions'] = [
-      rowData => ({
-        icon: PlayArrow,
-        tooltip: 'Run',
-        disabled: !canExecuteWorkflow(rowData.id),
-        onClick: () => handleExecute(rowData),
-      }),
-      rowData => ({
-        icon: FormatListBulleted,
-        tooltip: 'View runs',
-        disabled: !canViewWorkflow(rowData.id),
-        onClick: () => handleViewVariables(rowData),
-      }),
-      rowData => ({
-        icon: DeveloperModeOutlined,
-        tooltip: 'View input schema',
-        disabled: !canViewWorkflow(rowData.id),
-        onClick: () => handleViewInputSchema(rowData),
-      }),
-    ];
+    const actionItems: TableProps<FormattedWorkflowOverview>['actions'] = [];
+    if (!kind)
+      actionItems.push(
+        rowData => ({
+          icon: PlayArrow,
+          tooltip: 'Run',
+          disabled: !canExecuteWorkflow(rowData.id),
+          onClick: () => handleExecute(rowData),
+        }),
+        rowData => ({
+          icon: FormatListBulleted,
+          tooltip: 'View runs',
+          disabled: !canViewWorkflow(rowData.id),
+          onClick: () => handleViewVariables(rowData),
+        }),
+        rowData => ({
+          icon: DeveloperModeOutlined,
+          tooltip: 'View input schema',
+          disabled: !canViewWorkflow(rowData.id),
+          onClick: () => handleViewInputSchema(rowData),
+        }),
+      );
 
     return actionItems;
   }, [
@@ -220,6 +225,7 @@ export const WorkflowsTable = ({ items }: WorkflowsTableProps) => {
     handleExecute,
     handleViewVariables,
     handleViewInputSchema,
+    kind,
   ]);
 
   const columns = useMemo<TableColumn<FormattedWorkflowOverview>[]>(
@@ -227,8 +233,27 @@ export const WorkflowsTable = ({ items }: WorkflowsTableProps) => {
       {
         title: 'Name',
         field: 'name',
-        render: rowData =>
-          canViewWorkflow(rowData.id) ? (
+        render: rowData => {
+          if (!canViewWorkflow(rowData.id)) {
+            return rowData.name;
+          }
+
+          if (kind && name && namespace) {
+            return (
+              <Link
+                to={entityWorkflowLink({
+                  kind,
+                  name,
+                  namespace,
+                  workflowId: rowData.id,
+                })}
+              >
+                {rowData.name}
+              </Link>
+            );
+          }
+
+          return (
             <Link
               to={definitionLink({
                 workflowId: rowData.id,
@@ -236,9 +261,8 @@ export const WorkflowsTable = ({ items }: WorkflowsTableProps) => {
             >
               {rowData.name}
             </Link>
-          ) : (
-            rowData.name
-          ),
+          );
+        },
       },
       {
         title: 'Category',
@@ -274,7 +298,16 @@ export const WorkflowsTable = ({ items }: WorkflowsTableProps) => {
       },
       { title: 'Description', field: 'description', minWidth: '25vw' },
     ],
-    [canViewInstance, canViewWorkflow, definitionLink, items],
+    [
+      canViewInstance,
+      canViewWorkflow,
+      definitionLink,
+      items,
+      entityWorkflowLink,
+      name,
+      kind,
+      namespace,
+    ],
   );
 
   const options = useMemo<TableProps['options']>(

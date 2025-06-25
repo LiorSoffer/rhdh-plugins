@@ -145,6 +145,7 @@ export function mapToProcessInstanceDTO(
     // @ts-ignore
     workflowdata: variables?.workflowdata,
     initiatorEntity: variables?.initiatorEntity as string,
+    targetEntity: variables?.targetEntity as string,
     state: processInstance.state
       ? getProcessInstancesStatusDTOFromString(processInstance.state)
       : undefined,

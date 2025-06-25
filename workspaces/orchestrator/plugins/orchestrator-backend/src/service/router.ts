@@ -457,12 +457,14 @@ function setupInternalRoutes(
 
       const executeWorkflowRequestDTO = req.body;
 
+
       return routerApi.v2
         .executeWorkflow(
           executeWorkflowRequestDTO,
           workflowId,
-          businessKey,
           initiatorEntity,
+          req.body.inputData.targetEntity,
+          businessKey,
         )
         .then(result => {
           auditEvent.success({ meta: { id: result.id } });

@@ -383,6 +383,7 @@ describe('executeWorkflow', () => {
       workflowInfo.id,
       'businessKey',
       'someUserEntity',
+      'someEntity'
     );
 
     // Assert

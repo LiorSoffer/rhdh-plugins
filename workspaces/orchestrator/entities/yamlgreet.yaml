@@ -1,7 +1,7 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
-  name: yamlgreet # matches workflow ID
+  name: yamlgreet
   title: Greeting
   description: Greeting workflow
   tags:
@@ -11,11 +11,11 @@ spec:
   system: red-hat-developer-hub
   type: service
 
-  # matches workflow's dataInputSchema
   parameters:
     - title: Provide inputs
       required:
-        - language
+        - targetEntity
+        - name
       properties:
         language:
           title: Language
@@ -28,7 +28,18 @@ spec:
         name:
           title: Name
           type: string
-          pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'
+          pattern: '^[a-z0-9]([-a-z0-9]*[a-z0-9])?$'          
+        targetEntity:
+          title: Target Entity
+          type: string
+          description: Select a component or use your own user entity
+          ui:field: EntityPicker
+          ui:options:
+            allowedKinds:
+              - Component
+              - User
+            defaultValue: 'user:default/${{ user.entity.metadata.name }}'
+            allowArbitraryValues: false
 
   steps:
     - id: runWorkflow
