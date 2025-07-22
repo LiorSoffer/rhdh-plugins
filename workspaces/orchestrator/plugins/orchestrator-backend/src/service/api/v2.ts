@@ -158,6 +158,7 @@ export class V2 {
       inputData: {
         workflowdata: executeWorkflowRequestDTO.inputData,
         initiatorEntity: initiatorEntity,
+        targetEntity: executeWorkflowRequestDTO.targetEntity,
       },
       authTokens: executeWorkflowRequestDTO.authTokens as Array<AuthToken>,
       serviceUrl: definition.serviceUrl,

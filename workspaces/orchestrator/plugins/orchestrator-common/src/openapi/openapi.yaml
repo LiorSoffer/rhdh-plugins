@@ -483,6 +483,10 @@ components:
           type: array
           items:
             type: string
+        targetEntity:
+          type: string
+        businessKey:
+          type: string
         nodes:
           type: array
           items:
@@ -574,6 +578,9 @@ components:
             $ref: '#/components/schemas/AuthToken'
           minItems: 0
           additionalProperties: true
+        targetEntity:
+          type: string
+          description: The entity string identifier to execute the workflow for
     AuthToken:
       type: object
       properties:

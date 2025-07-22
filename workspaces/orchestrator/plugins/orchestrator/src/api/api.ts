@@ -44,6 +44,7 @@ export interface OrchestratorApi {
     parameters: JsonObject;
     authTokens: AuthToken[];
     businessKey?: string;
+    targetEntity?: string;
   }): Promise<AxiosResponse<ExecuteWorkflowResponseDTO>>;
 
   getWorkflowSource(workflowId: string): Promise<AxiosResponse<string>>;
@@ -61,9 +62,10 @@ export interface OrchestratorApi {
 
   pingWorkflowService(workflowId: string): Promise<AxiosResponse<boolean>>;
 
-  listWorkflowOverviews(): Promise<
-    AxiosResponse<WorkflowOverviewListResultDTO>
-  >;
+  listWorkflowOverviews(
+    paginationInfo?: PaginationInfoDTO,
+    filters?: Filter,
+  ): Promise<AxiosResponse<WorkflowOverviewListResultDTO>>;
 
   listInstances(
     paginationInfo?: PaginationInfoDTO,

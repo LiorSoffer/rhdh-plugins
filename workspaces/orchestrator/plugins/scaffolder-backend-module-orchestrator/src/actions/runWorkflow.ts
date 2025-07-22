@@ -53,9 +53,15 @@ export const createRunWorkflowAction = (
     supportsDryRun: true,
     schema: {
       input: {
-        required: ['parameters'],
+        required: ['parameters', 'workflow_id'],
         type: 'object',
         properties: {
+          workflow_id: {
+            type: 'string',
+            title: 'Workflow ID',
+            description:
+              'The workflow identifier from the workflow definition.',
+          },
           parameters: {
             type: 'object',
             title: 'Parameters',
@@ -65,9 +71,23 @@ export const createRunWorkflowAction = (
       },
     },
     async handler(ctx) {
-      const entity = ctx.templateInfo?.entityRef;
-      if (!entity) {
+      const templateEntity = ctx.templateInfo?.entityRef;
+      if (!templateEntity) {
         throw new Error('No template entity');
+      }
+      const targetEntity =
+        ctx.input.parameters.targetEntity?.toString() ??
+        templateEntity?.toString();
+
+      const { targetEntity: _, ...inputData } = ctx.input.parameters;
+
+      const [targetEntityKind, targetEntityNamespace, targetEntityName] =
+        targetEntity?.split(/[:\/]/) || [];
+
+      if (!ctx.input.workflow_id) {
+        throw new Error(
+          "Missing required 'workflow_id' input. Ensure that the step invoking the 'orchestrator:workflow:run' action includes an explicit 'workflow_id' field in its input.",
+        );
       }
 
       const api = await getOrchestratorApi(discoveryService);
@@ -79,19 +99,19 @@ export const createRunWorkflowAction = (
         return;
       }
 
-      if (!ctx.input.workflow_id) {
-        throw new Error(
-          "Missing required 'workflow_id' input. Ensure that the step invoking the 'orchestrator:workflow:run' action includes an explicit 'workflow_id' field in its input.",
-        );
-      }
-
       try {
         const { data } = await api.executeWorkflow(
           ctx.input.workflow_id,
-          { inputData: ctx.input.parameters },
+          {
+            inputData,
+            targetEntity,
+          },
           reqConfigOption,
         );
-        ctx.output('instanceUrl', `/orchestrator/instances/${data.id}`);
+        ctx.output(
+          'instanceUrl',
+          `/orchestrator/entity/${targetEntityNamespace}/${targetEntityKind}/${targetEntityName}/${ctx.input.workflow_id}/${data.id}`,
+        );
       } catch (err) {
         throw getError(err);
       }

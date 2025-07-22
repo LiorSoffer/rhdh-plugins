@@ -17,6 +17,13 @@ spec:
       required:
         - language
       properties:
+        targetEntity:
+          title: Target Entity
+          description: Select an entity from the catalog
+          ui:field: EntityPicker
+          ui:options:
+            allowedKinds:
+              - Component
         language:
           title: Language
           type: string

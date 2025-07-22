@@ -103,6 +103,7 @@ export class OrchestratorClient implements OrchestratorApi {
     workflowId: string;
     parameters: JsonObject;
     authTokens: AuthToken[];
+    targetEntity?: string;
   }): Promise<AxiosResponse<ExecuteWorkflowResponseDTO>> {
     const defaultApi = await this.getDefaultAPI();
     const reqConfigOption: AxiosRequestConfig =
@@ -111,6 +112,7 @@ export class OrchestratorClient implements OrchestratorApi {
     const requestBody: ExecuteWorkflowRequestDTO = {
       inputData: args.parameters,
       authTokens: args.authTokens,
+      targetEntity: args.targetEntity,
     };
     try {
       return await defaultApi.executeWorkflow(

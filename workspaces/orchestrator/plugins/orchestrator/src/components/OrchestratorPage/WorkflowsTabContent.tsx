@@ -25,21 +25,38 @@ import { useApi } from '@backstage/core-plugin-api';
 
 import Grid from '@mui/material/Grid';
 
-import { WorkflowOverviewDTO } from '@red-hat-developer-hub/backstage-plugin-orchestrator-common';
+import {
+  Filter,
+  WorkflowOverviewDTO,
+} from '@red-hat-developer-hub/backstage-plugin-orchestrator-common';
 
 import { orchestratorApiRef } from '../../api';
 import usePolling from '../../hooks/usePolling';
 import { WorkflowsTable } from './WorkflowsTable';
 
-export const WorkflowsTabContent = () => {
+export const WorkflowsTabContent = ({
+  workflowsArray,
+}: {
+  workflowsArray?: string[];
+}) => {
   const orchestratorApi = useApi(orchestratorApiRef);
-
+  let filter: Filter | undefined = undefined;
+  if (workflowsArray) {
+    filter = {
+      field: 'id',
+      operator: 'IN',
+      value: workflowsArray,
+    };
+  }
   const fetchWorkflowOverviews = useCallback(async () => {
     // TODO: pass pagination details only if the user is granted the generic orchestratorWorkflowPermission
     // FE pagination will be used otherwise
-    const overviewsResp = await orchestratorApi.listWorkflowOverviews();
+    const overviewsResp = await orchestratorApi.listWorkflowOverviews(
+      undefined,
+      filter,
+    );
     return overviewsResp.data.overviews;
-  }, [orchestratorApi]);
+  }, [orchestratorApi, filter]);
 
   const { loading, error, value } = usePolling<
     WorkflowOverviewDTO[] | undefined

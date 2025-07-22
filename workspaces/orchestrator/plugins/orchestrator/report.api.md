@@ -12,6 +12,16 @@ import { default as React_2 } from 'react';
 import { RouteRef } from '@backstage/core-plugin-api';
 import { SvgIconProps } from '@mui/material/SvgIcon';
 
+// Warning: (ae-missing-release-tag) "IsOrchestratorCatalogTabAvailable" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const IsOrchestratorCatalogTabAvailable: () => boolean;
+
+// Warning: (ae-missing-release-tag) "OrchestratorCatalogTab" is part of the package's API, but it is missing a release tag (@alpha, @beta, @public, or @internal)
+//
+// @public (undocumented)
+export const OrchestratorCatalogTab: () => React_2.JSX.Element;
+
 // @public
 export const OrchestratorIcon: (props: SvgIconProps) => React_2.JSX.Element;
 
@@ -22,6 +32,11 @@ export const OrchestratorPage: () => JSX_2.Element;
 export const orchestratorPlugin: BackstagePlugin<    {
 root: RouteRef<undefined>;
 }, {}, {}>;
+
+// Warnings were encountered during analysis:
+//
+// src/components/catalogComponents/CatalogTab.d.ts:2:22 - (ae-undocumented) Missing documentation for "IsOrchestratorCatalogTabAvailable".
+// src/components/catalogComponents/CatalogTab.d.ts:4:22 - (ae-undocumented) Missing documentation for "OrchestratorCatalogTab".
 
 // (No @packageDocumentation comment for this package)
 

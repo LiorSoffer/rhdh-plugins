@@ -887,6 +887,10 @@ ul.nav-tabs {
       "items" : {
         "$ref" : "#/components/schemas/AuthToken"
       }
+    },
+    "targetEntity" : {
+      "type" : "string",
+      "description" : "The entity string identifier to execute the workflow for"
     }
   }
 };
@@ -1094,6 +1098,12 @@ ul.nav-tabs {
       "items" : {
         "type" : "string"
       }
+    },
+    "targetEntity" : {
+      "type" : "string"
+    },
+    "businessKey" : {
+      "type" : "string"
     },
     "nodes" : {
       "type" : "array",
@@ -1881,7 +1891,8 @@ The identifier of the workflow instance to abort.
   }, {
     &quot;provider&quot; : &quot;provider&quot;,
     &quot;token&quot; : &quot;token&quot;
-  } ]
+  } ],
+  &quot;targetEntity&quot; : &quot;targetEntity&quot;
 }'
 </code></pre>
                           </div>

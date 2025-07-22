@@ -15,7 +15,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAsync } from 'react-use';
 
 import {
@@ -53,6 +53,8 @@ import MissingSchemaNotice from './MissingSchemaNotice';
 import { getSchemaUpdater } from './schemaUpdater';
 
 export const ExecuteWorkflowPage = () => {
+  const [searchParams] = useSearchParams();
+  const targetEntity = searchParams.get('targetEntity');
   const orchestratorApi = useApi(orchestratorApiRef);
   const { authenticate } = useOrchestratorAuth();
   const { workflowId } = useRouteRefParams(executeWorkflowRouteRef);
@@ -107,6 +109,7 @@ export const ExecuteWorkflowPage = () => {
           workflowId,
           parameters,
           authTokens,
+          targetEntity: targetEntity ?? undefined,
         });
         navigate(instanceLink({ instanceId: response.data.id }));
       } catch (err) {
@@ -122,6 +125,7 @@ export const ExecuteWorkflowPage = () => {
       instanceLink,
       authTokenDescriptors,
       authenticate,
+      targetEntity,
     ],
   );
 

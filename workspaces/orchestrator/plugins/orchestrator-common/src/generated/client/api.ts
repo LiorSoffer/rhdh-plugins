@@ -79,6 +79,12 @@ export interface ExecuteWorkflowRequestDTO {
      * @memberof ExecuteWorkflowRequestDTO
      */
     'authTokens'?: Array<AuthToken>;
+    /**
+     * The entity string identifier to execute the workflow for
+     * @type {string}
+     * @memberof ExecuteWorkflowRequestDTO
+     */
+    'targetEntity'?: string;
 }
 /**
  * 
@@ -414,6 +420,18 @@ export interface ProcessInstanceDTO {
      * @memberof ProcessInstanceDTO
      */
     'executionSummary'?: Array<string>;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProcessInstanceDTO
+     */
+    'targetEntity'?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof ProcessInstanceDTO
+     */
+    'businessKey'?: string;
     /**
      * 
      * @type {Array<NodeInstanceDTO>}
